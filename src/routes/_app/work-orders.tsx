@@ -78,6 +78,8 @@ function WorkOrdersPage() {
     return list;
   }, [workOrders, search, statusFilter, priorityFilter, techFilter, assetFilter]);
 
+  const onDragStart = (_e: React.DragEvent, id: string) => setDragId(id);
+
   const onDrop = (status: WorkOrderStatus) => {
     if (!dragId) return;
     setWorkOrderStatus(dragId, status);
@@ -206,7 +208,7 @@ function WorkOrdersPage() {
                       assetName={assets.find((a) => a.id === wo.assetId)?.name ?? wo.assetId}
                       techName={technicians.find((t) => t.id === wo.technicianId)?.name ?? ""}
                       today={today}
-                      onDragStart={(_e, id) => setDragId(id)}
+                      onDragStart={(e) => onDragStart(e, wo.id)}
                     />
                   ))}
                 </div>

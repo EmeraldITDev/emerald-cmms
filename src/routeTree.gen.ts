@@ -9,7 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MyJobsRouteImport } from './routes/my-jobs'
+import { Route as MyJobsIdRouteImport } from './routes/my-jobs.$id'
+import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppAssetsRouteImport } from './routes/_app/assets'
+import { Route as AppAssetsIdRouteImport } from './routes/_app/assets.$id'
+import { Route as AppWorkOrdersRouteImport } from './routes/_app/work-orders'
+import { Route as AppWorkOrdersNewRouteImport } from './routes/_app/work-orders.new'
+import { Route as AppWorkOrdersIdRouteImport } from './routes/_app/work-orders.$id'
+import { Route as AppPreventiveMaintenanceRouteImport } from './routes/_app/preventive-maintenance'
+import { Route as AppInventoryRouteImport } from './routes/_app/inventory'
+import { Route as AppTechniciansRouteImport } from './routes/_app/technicians'
+import { Route as AppTechniciansIdRouteImport } from './routes/_app/technicians.$id'
+import { Route as AppReportsRouteImport } from './routes/_app/reports'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -17,26 +37,202 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 
+const MyJobsRoute = MyJobsRouteImport.update({
+  id: '/my-jobs',
+  path: '/my-jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+const MyJobsIdRoute = MyJobsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => MyJobsRoute,
+} as any)
+
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppAssetsRoute = AppAssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppAssetsIdRoute = AppAssetsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppAssetsRoute,
+} as any)
+
+const AppWorkOrdersRoute = AppWorkOrdersRouteImport.update({
+  id: '/work-orders',
+  path: '/work-orders',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppWorkOrdersNewRoute = AppWorkOrdersNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppWorkOrdersRoute,
+} as any)
+
+const AppWorkOrdersIdRoute = AppWorkOrdersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppWorkOrdersRoute,
+} as any)
+
+const AppPreventiveMaintenanceRoute = AppPreventiveMaintenanceRouteImport.update({
+  id: '/preventive-maintenance',
+  path: '/preventive-maintenance',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppInventoryRoute = AppInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppTechniciansRoute = AppTechniciansRouteImport.update({
+  id: '/technicians',
+  path: '/technicians',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppTechniciansIdRoute = AppTechniciansIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppTechniciansRoute,
+} as any)
+
+const AppReportsRoute = AppReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AppRoute,
+} as any)
+
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/my-jobs': typeof MyJobsRouteWithChildren
+  '/my-jobs/$id': typeof MyJobsIdRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/assets': typeof AppAssetsRouteWithChildren
+  '/assets/$id': typeof AppAssetsIdRoute
+  '/work-orders': typeof AppWorkOrdersRouteWithChildren
+  '/work-orders/new': typeof AppWorkOrdersNewRoute
+  '/work-orders/$id': typeof AppWorkOrdersIdRoute
+  '/preventive-maintenance': typeof AppPreventiveMaintenanceRoute
+  '/inventory': typeof AppInventoryRoute
+  '/technicians': typeof AppTechniciansRouteWithChildren
+  '/technicians/$id': typeof AppTechniciansIdRoute
+  '/reports': typeof AppReportsRoute
+  '/settings': typeof AppSettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/my-jobs': typeof MyJobsRouteWithChildren
+  '/my-jobs/$id': typeof MyJobsIdRoute
+  '/dashboard': typeof AppDashboardRoute
+  '/assets': typeof AppAssetsRouteWithChildren
+  '/assets/$id': typeof AppAssetsIdRoute
+  '/work-orders': typeof AppWorkOrdersRouteWithChildren
+  '/work-orders/new': typeof AppWorkOrdersNewRoute
+  '/work-orders/$id': typeof AppWorkOrdersIdRoute
+  '/preventive-maintenance': typeof AppPreventiveMaintenanceRoute
+  '/inventory': typeof AppInventoryRoute
+  '/technicians': typeof AppTechniciansRouteWithChildren
+  '/technicians/$id': typeof AppTechniciansIdRoute
+  '/reports': typeof AppReportsRoute
+  '/settings': typeof AppSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/my-jobs': typeof MyJobsRouteWithChildren
+  '/my-jobs/$id': typeof MyJobsIdRoute
+  '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/assets': typeof AppAssetsRouteWithChildren
+  '/_app/assets/$id': typeof AppAssetsIdRoute
+  '/_app/work-orders': typeof AppWorkOrdersRouteWithChildren
+  '/_app/work-orders/new': typeof AppWorkOrdersNewRoute
+  '/_app/work-orders/$id': typeof AppWorkOrdersIdRoute
+  '/_app/preventive-maintenance': typeof AppPreventiveMaintenanceRoute
+  '/_app/inventory': typeof AppInventoryRoute
+  '/_app/technicians': typeof AppTechniciansRouteWithChildren
+  '/_app/technicians/$id': typeof AppTechniciansIdRoute
+  '/_app/reports': typeof AppReportsRoute
+  '/_app/settings': typeof AppSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/my-jobs'
+    | '/my-jobs/$id'
+    | '/dashboard'
+    | '/assets'
+    | '/assets/$id'
+    | '/work-orders'
+    | '/work-orders/new'
+    | '/work-orders/$id'
+    | '/preventive-maintenance'
+    | '/inventory'
+    | '/technicians'
+    | '/technicians/$id'
+    | '/reports'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/my-jobs'
+    | '/my-jobs/$id'
+    | '/dashboard'
+    | '/assets'
+    | '/assets/$id'
+    | '/work-orders'
+    | '/work-orders/new'
+    | '/work-orders/$id'
+    | '/preventive-maintenance'
+    | '/inventory'
+    | '/technicians'
+    | '/technicians/$id'
+    | '/reports'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/my-jobs'
+    | '/my-jobs/$id'
+    | '/_app/dashboard'
+    | '/_app/assets'
+    | '/_app/assets/$id'
+    | '/_app/work-orders'
+    | '/_app/work-orders/new'
+    | '/_app/work-orders/$id'
+    | '/_app/preventive-maintenance'
+    | '/_app/inventory'
+    | '/_app/technicians'
+    | '/_app/technicians/$id'
+    | '/_app/reports'
+    | '/_app/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  MyJobsRoute: typeof MyJobsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,12 +244,178 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-jobs': {
+      id: '/my-jobs'
+      path: '/my-jobs'
+      fullPath: '/my-jobs'
+      preLoaderRoute: typeof MyJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-jobs/$id': {
+      id: '/my-jobs/$id'
+      path: '/$id'
+      fullPath: '/my-jobs/$id'
+      preLoaderRoute: typeof MyJobsIdRouteImport
+      parentRoute: typeof MyJobsRoute
+    }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/assets': {
+      id: '/_app/assets'
+      path: '/assets'
+      fullPath: '/assets'
+      preLoaderRoute: typeof AppAssetsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/assets/$id': {
+      id: '/_app/assets/$id'
+      path: '/$id'
+      fullPath: '/assets/$id'
+      preLoaderRoute: typeof AppAssetsIdRouteImport
+      parentRoute: typeof AppAssetsRoute
+    }
+    '/_app/work-orders': {
+      id: '/_app/work-orders'
+      path: '/work-orders'
+      fullPath: '/work-orders'
+      preLoaderRoute: typeof AppWorkOrdersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/work-orders/new': {
+      id: '/_app/work-orders/new'
+      path: '/new'
+      fullPath: '/work-orders/new'
+      preLoaderRoute: typeof AppWorkOrdersNewRouteImport
+      parentRoute: typeof AppWorkOrdersRoute
+    }
+    '/_app/work-orders/$id': {
+      id: '/_app/work-orders/$id'
+      path: '/$id'
+      fullPath: '/work-orders/$id'
+      preLoaderRoute: typeof AppWorkOrdersIdRouteImport
+      parentRoute: typeof AppWorkOrdersRoute
+    }
+    '/_app/preventive-maintenance': {
+      id: '/_app/preventive-maintenance'
+      path: '/preventive-maintenance'
+      fullPath: '/preventive-maintenance'
+      preLoaderRoute: typeof AppPreventiveMaintenanceRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/inventory': {
+      id: '/_app/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AppInventoryRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/technicians': {
+      id: '/_app/technicians'
+      path: '/technicians'
+      fullPath: '/technicians'
+      preLoaderRoute: typeof AppTechniciansRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/technicians/$id': {
+      id: '/_app/technicians/$id'
+      path: '/$id'
+      fullPath: '/technicians/$id'
+      preLoaderRoute: typeof AppTechniciansIdRouteImport
+      parentRoute: typeof AppTechniciansRoute
+    }
+    '/_app/reports': {
+      id: '/_app/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AppReportsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+interface AppRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppAssetsRoute: typeof AppAssetsRouteWithChildren
+  AppWorkOrdersRoute: typeof AppWorkOrdersRouteWithChildren
+  AppPreventiveMaintenanceRoute: typeof AppPreventiveMaintenanceRoute
+  AppInventoryRoute: typeof AppInventoryRoute
+  AppTechniciansRoute: typeof AppTechniciansRouteWithChildren
+  AppReportsRoute: typeof AppReportsRoute
+  AppSettingsRoute: typeof AppSettingsRoute
 }
+
+interface AppAssetsRouteChildren {
+  AppAssetsIdRoute: typeof AppAssetsIdRoute
+}
+
+interface AppWorkOrdersRouteChildren {
+  AppWorkOrdersNewRoute: typeof AppWorkOrdersNewRoute
+  AppWorkOrdersIdRoute: typeof AppWorkOrdersIdRoute
+}
+
+interface AppTechniciansRouteChildren {
+  AppTechniciansIdRoute: typeof AppTechniciansIdRoute
+}
+
+interface MyJobsRouteChildren {
+  MyJobsIdRoute: typeof MyJobsIdRoute
+}
+
+const AppAssetsRouteWithChildren = AppAssetsRoute._addFileChildren({
+  AppAssetsIdRoute,
+} as AppAssetsRouteChildren)
+
+const AppWorkOrdersRouteWithChildren = AppWorkOrdersRoute._addFileChildren({
+  AppWorkOrdersNewRoute,
+  AppWorkOrdersIdRoute,
+} as AppWorkOrdersRouteChildren)
+
+const AppTechniciansRouteWithChildren = AppTechniciansRoute._addFileChildren({
+  AppTechniciansIdRoute,
+} as AppTechniciansRouteChildren)
+
+const MyJobsRouteWithChildren = MyJobsRoute._addFileChildren({
+  MyJobsIdRoute,
+} as MyJobsRouteChildren)
+
+const AppRouteChildren: AppRouteChildren = {
+  AppDashboardRoute,
+  AppAssetsRoute: AppAssetsRouteWithChildren,
+  AppWorkOrdersRoute: AppWorkOrdersRouteWithChildren,
+  AppPreventiveMaintenanceRoute,
+  AppInventoryRoute,
+  AppTechniciansRoute: AppTechniciansRouteWithChildren,
+  AppReportsRoute,
+  AppSettingsRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute,
+  AppRoute: AppRouteWithChildren,
+  MyJobsRoute: MyJobsRouteWithChildren,
+}
+
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()

@@ -72,7 +72,7 @@ function SettingsPage() {
             </div>
             <div className="flex items-center gap-2">
               <Sun className="size-4 text-muted-foreground" aria-hidden />
-              <Switch checked={theme === "dark"} onCheckedChange={toggleTheme} aria-label="Toggle dark mode" />
+              <Switch checked={theme === "dark"} onCheckedChange={() => toggleTheme()} aria-label="Toggle dark mode" />
               <Moon className="size-4 text-muted-foreground" aria-hidden />
             </div>
           </div>

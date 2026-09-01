@@ -13,11 +13,11 @@ import type { Priority, WorkType } from "@/data/types";
 import { shiftDays } from "@/data/seed";
 import { toast } from "sonner";
 
-type Search = { assetId?: string };
+type Search = { assetId?: string | undefined };
 
 export const Route = createFileRoute("/_app/work-orders/new")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    assetId: typeof s.assetId === "string" ? s.assetId : undefined,
+    assetId: typeof s["assetId"] === "string" ? s["assetId"] : undefined,
   }),
   component: NewWorkOrderPage,
 });
