@@ -4,10 +4,10 @@ import { Gauge, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCmms } from "@/store/cmms";
 import type { Role } from "@/data/types";
 import { SITE } from "@/data/seed";
+import { cn } from "@/lib/utils";
 
 const ROLE_LABEL: Record<Role, string> = {
   manager: "Maintenance Manager",
@@ -23,6 +23,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const { role, setRole } = useCmms();
   const [email, setEmail] = useState("kemi.balogun@emeraldindustrial.co");
+  const [password, setPassword] = useState("demo");
 
   const signIn = () => {
     navigate({ to: "/dashboard" });
@@ -56,7 +57,7 @@ function LoginPage() {
 
       <div className="flex flex-1 items-center justify-center bg-background px-6 py-12">
         <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold tracking-tight">Sign in</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Sign in</h2>
           <p className="mt-1 text-sm text-muted-foreground">Use any credentials — this is a frontend demo.</p>
 
           <form
@@ -85,24 +86,34 @@ function LoginPage() {
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Lock className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input id="password" type="password" defaultValue="demo" className="pl-9" autoComplete="current-password" />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-9"
+                  autoComplete="current-password"
+                />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="role">Demo role</Label>
-              <Select value={role} onValueChange={(v) => setRole(v as Role)}>
-                <SelectTrigger id="role">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {(Object.keys(ROLE_LABEL) as Role[]).map((r) => (
-                    <SelectItem key={r} value={r}>
-                      {ROLE_LABEL[r]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value as Role)}
+                className={cn(
+                  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm",
+                  "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                )}
+              >
+                {(Object.keys(ROLE_LABEL) as Role[]).map((r) => (
+                  <option key={r} value={r}>
+                    {ROLE_LABEL[r]}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <Button type="submit" className="w-full" size="lg">
