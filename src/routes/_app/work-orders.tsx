@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ClipboardList, LayoutGrid, List, Plus } from "lucide-react";
-import { EmptyState, PageHeader, TableSkeleton, useMockLoading } from "@/components/ui-bits";
+import { EmptyState, FilterBar, FilterControl, PageHeader, TableSkeleton, TableWrap, useMockLoading } from "@/components/ui-bits";
 import { PriorityBadge, WorkOrderStatusBadge } from "@/components/status";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,52 +102,62 @@ function WorkOrdersPage() {
         title="Work orders"
         description="Corrective, preventive, and emergency maintenance jobs"
         actions={
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link to="/work-orders/new"><Plus className="size-4" aria-hidden /> Create work order</Link>
           </Button>
         }
       />
 
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Tabs value={view} onValueChange={(v) => setView(v as typeof view)}>
-          <TabsList>
-            <TabsTrigger value="list"><List className="mr-1.5 size-4" aria-hidden /> List</TabsTrigger>
-            <TabsTrigger value="kanban"><LayoutGrid className="mr-1.5 size-4" aria-hidden /> Kanban</TabsTrigger>
+      <div className="mb-4">
+        <Tabs value={view} onValueChange={(v) => setView(v as typeof view)} className="w-full">
+          <TabsList className="grid h-11 w-full grid-cols-2 sm:inline-flex sm:w-auto">
+            <TabsTrigger value="list" className="h-9"><List className="mr-1.5 size-4" aria-hidden /> List</TabsTrigger>
+            <TabsTrigger value="kanban" className="h-9"><LayoutGrid className="mr-1.5 size-4" aria-hidden /> Kanban</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Input placeholder="Search work orders…" value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-xs" />
-        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as WorkOrderStatus | "all")}>
-          <SelectTrigger className="w-[130px]"><SelectValue placeholder="Status" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            {COLUMNS.map((c) => <SelectItem key={c.status} value={c.status}>{c.label}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={priorityFilter} onValueChange={(v) => setPriorityFilter(v as Priority | "all")}>
-          <SelectTrigger className="w-[130px]"><SelectValue placeholder="Priority" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All priorities</SelectItem>
-            {(["low", "medium", "high", "critical"] as Priority[]).map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={techFilter} onValueChange={setTechFilter}>
-          <SelectTrigger className="w-[160px]"><SelectValue placeholder="Technician" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All technicians</SelectItem>
-            {technicians.map((t) => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={assetFilter} onValueChange={setAssetFilter}>
-          <SelectTrigger className="w-[160px]"><SelectValue placeholder="Asset" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All assets</SelectItem>
-            {equipment.map((a) => <SelectItem key={a.id} value={a.id}>{a.id}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </div>
+      <FilterBar className="mb-4">
+        <FilterControl className="min-[360px]:col-span-2 lg:col-span-1">
+          <Input placeholder="Search work orders…" value={search} onChange={(e) => setSearch(e.target.value)} className="h-10" />
+        </FilterControl>
+        <FilterControl>
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as WorkOrderStatus | "all")}>
+            <SelectTrigger className="h-10"><SelectValue placeholder="Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              {COLUMNS.map((c) => <SelectItem key={c.status} value={c.status}>{c.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </FilterControl>
+        <FilterControl>
+          <Select value={priorityFilter} onValueChange={(v) => setPriorityFilter(v as Priority | "all")}>
+            <SelectTrigger className="h-10"><SelectValue placeholder="Priority" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All priorities</SelectItem>
+              {(["low", "medium", "high", "critical"] as Priority[]).map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </FilterControl>
+        <FilterControl>
+          <Select value={techFilter} onValueChange={setTechFilter}>
+            <SelectTrigger className="h-10"><SelectValue placeholder="Technician" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All technicians</SelectItem>
+              {technicians.map((t) => <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </FilterControl>
+        <FilterControl>
+          <Select value={assetFilter} onValueChange={setAssetFilter}>
+            <SelectTrigger className="h-10"><SelectValue placeholder="Asset" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All assets</SelectItem>
+              {equipment.map((a) => <SelectItem key={a.id} value={a.id}>{a.id}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </FilterControl>
+      </FilterBar>
 
       {filtered.length === 0 ? (
         <EmptyState
@@ -157,42 +167,68 @@ function WorkOrdersPage() {
           action={<Button asChild><Link to="/work-orders/new">Create work order</Link></Button>}
         />
       ) : view === "list" ? (
-        <div className="surface-card overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Asset</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Technician</TableHead>
-                <TableHead>Due</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((w) => (
-                <TableRow key={w.id}>
-                  <TableCell><Link to="/work-orders/$id" params={{ id: w.id }} className="font-semibold text-primary hover:underline">{w.id}</Link></TableCell>
-                  <TableCell className="max-w-[240px] truncate">{w.title}</TableCell>
-                  <TableCell>{w.assetId}</TableCell>
-                  <TableCell><WorkOrderStatusBadge status={w.status} /></TableCell>
-                  <TableCell><PriorityBadge priority={w.priority} /></TableCell>
-                  <TableCell>{technicians.find((t) => t.id === w.technicianId)?.name ?? "—"}</TableCell>
-                  <TableCell>{formatDate(w.dueDate)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <>
+          <ul className="space-y-3 md:hidden">
+            {filtered.map((w) => (
+              <li key={w.id}>
+                <Link
+                  to="/work-orders/$id"
+                  params={{ id: w.id }}
+                  className="block rounded-lg border bg-card p-4 shadow-sm transition-colors active:bg-muted/50"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-xs font-semibold text-muted-foreground">{w.id}</p>
+                    <WorkOrderStatusBadge status={w.status} />
+                  </div>
+                  <p className="mt-1 text-sm font-medium leading-snug">{w.title}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">{w.assetId}</p>
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                    <PriorityBadge priority={w.priority} />
+                    <span className="text-xs text-muted-foreground">{formatDate(w.dueDate)}</span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden md:block">
+            <TableWrap minWidth={800}>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Asset</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Priority</TableHead>
+                    <TableHead>Technician</TableHead>
+                    <TableHead>Due</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.map((w) => (
+                    <TableRow key={w.id}>
+                      <TableCell><Link to="/work-orders/$id" params={{ id: w.id }} className="font-semibold text-primary hover:underline">{w.id}</Link></TableCell>
+                      <TableCell className="max-w-[240px] truncate">{w.title}</TableCell>
+                      <TableCell>{w.assetId}</TableCell>
+                      <TableCell><WorkOrderStatusBadge status={w.status} /></TableCell>
+                      <TableCell><PriorityBadge priority={w.priority} /></TableCell>
+                      <TableCell>{technicians.find((t) => t.id === w.technicianId)?.name ?? "—"}</TableCell>
+                      <TableCell>{formatDate(w.dueDate)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableWrap>
+          </div>
+        </>
       ) : (
-        <div className="grid gap-3 overflow-x-auto pb-2 md:grid-cols-3 xl:grid-cols-5">
+        <div className="flex gap-3 overflow-x-auto pb-3 snap-x snap-mandatory md:grid md:grid-cols-3 md:overflow-visible md:pb-2 xl:grid-cols-5">
           {COLUMNS.map((col) => {
             const items = filtered.filter((w) => w.status === col.status);
             return (
               <div
                 key={col.status}
-                className="flex min-w-[220px] flex-col rounded-lg border bg-muted/30"
+                className="flex w-[min(85vw,280px)] shrink-0 snap-start flex-col rounded-lg border bg-muted/30 md:w-auto md:shrink"
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={() => onDrop(col.status)}
               >

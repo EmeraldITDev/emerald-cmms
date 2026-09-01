@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ChevronRight, Factory, Plus } from "lucide-react";
 import { AssetStatusBadge, CriticalityBadge, HealthBar } from "@/components/status";
-import { EmptyState, PageHeader, TableSkeleton, useMockLoading } from "@/components/ui-bits";
+import { EmptyState, FilterBar, FilterControl, PageHeader, TableSkeleton, TableWrap, useMockLoading } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -90,7 +90,7 @@ function AssetsPage() {
         title="Assets"
         description="Equipment register for Lagos Processing Plant"
         actions={
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link to="/work-orders/new">
               <Plus className="size-4" aria-hidden /> Raise work order
             </Link>
@@ -104,54 +104,64 @@ function AssetsPage() {
           {root ? <AssetTreeNode asset={root} assets={assets} /> : null}
         </aside>
 
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <Input
-              placeholder="Search assets…"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="max-w-xs"
-              aria-label="Search assets"
-            />
-            <Select value={location} onValueChange={(v) => { setLocation(v); setPage(1); }}>
-              <SelectTrigger className="w-[140px]"><SelectValue placeholder="Location" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All locations</SelectItem>
-                {locations.map((l) => (
-                  <SelectItem key={l} value={l}>{l}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={status} onValueChange={(v) => { setStatus(v as AssetStatus | "all"); setPage(1); }}>
-              <SelectTrigger className="w-[140px]"><SelectValue placeholder="Status" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                {(["operating", "warning", "degraded", "critical", "offline"] as AssetStatus[]).map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={criticality} onValueChange={(v) => { setCriticality(v as Criticality | "all"); setPage(1); }}>
-              <SelectTrigger className="w-[150px]"><SelectValue placeholder="Criticality" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All criticality</SelectItem>
-                {(["low", "medium", "high"] as Criticality[]).map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={sort} onValueChange={(v) => setSort(v as typeof sort)}>
-              <SelectTrigger className="w-[130px]"><SelectValue placeholder="Sort" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="id">Sort: ID</SelectItem>
-                <SelectItem value="name">Sort: Name</SelectItem>
-                <SelectItem value="health">Sort: Health</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="min-w-0 space-y-4">
+          <FilterBar>
+            <FilterControl className="min-[360px]:col-span-2 lg:col-span-1">
+              <Input
+                placeholder="Search assets…"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="h-10"
+                aria-label="Search assets"
+              />
+            </FilterControl>
+            <FilterControl>
+              <Select value={location} onValueChange={(v) => { setLocation(v); setPage(1); }}>
+                <SelectTrigger className="h-10"><SelectValue placeholder="Location" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All locations</SelectItem>
+                  {locations.map((l) => (
+                    <SelectItem key={l} value={l}>{l}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FilterControl>
+            <FilterControl>
+              <Select value={status} onValueChange={(v) => { setStatus(v as AssetStatus | "all"); setPage(1); }}>
+                <SelectTrigger className="h-10"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All statuses</SelectItem>
+                  {(["operating", "warning", "degraded", "critical", "offline"] as AssetStatus[]).map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FilterControl>
+            <FilterControl>
+              <Select value={criticality} onValueChange={(v) => { setCriticality(v as Criticality | "all"); setPage(1); }}>
+                <SelectTrigger className="h-10"><SelectValue placeholder="Criticality" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All criticality</SelectItem>
+                  {(["low", "medium", "high"] as Criticality[]).map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FilterControl>
+            <FilterControl>
+              <Select value={sort} onValueChange={(v) => setSort(v as typeof sort)}>
+                <SelectTrigger className="h-10"><SelectValue placeholder="Sort" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="id">Sort: ID</SelectItem>
+                  <SelectItem value="name">Sort: Name</SelectItem>
+                  <SelectItem value="health">Sort: Health</SelectItem>
+                </SelectContent>
+              </Select>
+            </FilterControl>
+          </FilterBar>
 
           {filtered.length === 0 ? (
             <EmptyState
@@ -165,51 +175,79 @@ function AssetsPage() {
               }
             />
           ) : (
-            <div className="surface-card overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Asset ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Criticality</TableHead>
-                    <TableHead>Health</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pageItems.map((a) => (
-                    <TableRow key={a.id} className="cursor-pointer hover:bg-muted/40">
-                      <TableCell>
-                        <Link to="/assets/$id" params={{ id: a.id }} className="font-semibold text-primary hover:underline">
-                          {a.id}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{a.name}</TableCell>
-                      <TableCell>{a.category}</TableCell>
-                      <TableCell>{a.location}</TableCell>
-                      <TableCell><AssetStatusBadge status={a.status} /></TableCell>
-                      <TableCell><CriticalityBadge criticality={a.criticality} /></TableCell>
-                      <TableCell><HealthBar value={a.healthScore} /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <div className="flex items-center justify-between border-t px-4 py-3 text-sm text-muted-foreground">
-                <span>
+            <>
+              <ul className="space-y-3 md:hidden">
+                {pageItems.map((a) => (
+                  <li key={a.id}>
+                    <Link
+                      to="/assets/$id"
+                      params={{ id: a.id }}
+                      className="block rounded-lg border bg-card p-4 shadow-sm transition-colors active:bg-muted/50"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-semibold text-primary">{a.id}</p>
+                        <AssetStatusBadge status={a.status} />
+                      </div>
+                      <p className="mt-1 text-sm font-medium leading-snug">{a.name}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{a.category} · {a.location}</p>
+                      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                        <CriticalityBadge criticality={a.criticality} />
+                        <HealthBar value={a.healthScore} />
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="hidden md:block">
+                <TableWrap minWidth={720}>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Asset ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Criticality</TableHead>
+                        <TableHead>Health</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pageItems.map((a) => (
+                        <TableRow key={a.id} className="cursor-pointer hover:bg-muted/40">
+                          <TableCell>
+                            <Link to="/assets/$id" params={{ id: a.id }} className="font-semibold text-primary hover:underline">
+                              {a.id}
+                            </Link>
+                          </TableCell>
+                          <TableCell>{a.name}</TableCell>
+                          <TableCell>{a.category}</TableCell>
+                          <TableCell>{a.location}</TableCell>
+                          <TableCell><AssetStatusBadge status={a.status} /></TableCell>
+                          <TableCell><CriticalityBadge criticality={a.criticality} /></TableCell>
+                          <TableCell><HealthBar value={a.healthScore} /></TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableWrap>
+              </div>
+
+              <div className="flex flex-col gap-3 rounded-lg border bg-card px-3 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-4">
+                <span className="text-center sm:text-left">
                   Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
                 </span>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+                  <Button variant="outline" size="sm" className="h-10 flex-1 sm:flex-none" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
                     Previous
                   </Button>
-                  <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+                  <Button variant="outline" size="sm" className="h-10 flex-1 sm:flex-none" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
                     Next
                   </Button>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>

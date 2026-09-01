@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { CalendarClock, Wrench } from "lucide-react";
-import { EmptyState, PageHeader, SectionCard, TableSkeleton, useMockLoading } from "@/components/ui-bits";
+import { EmptyState, PageHeader, SectionCard, TableSkeleton, TableWrap, useMockLoading } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -50,17 +50,47 @@ function PreventiveMaintenancePage() {
     <div>
       <PageHeader title="Preventive maintenance" description="Time-based and meter-based PM schedules" />
 
-      <Tabs defaultValue="list">
-        <TabsList>
-          <TabsTrigger value="list">Schedule list</TabsTrigger>
-          <TabsTrigger value="calendar">Calendar view</TabsTrigger>
+      <Tabs defaultValue="list" className="min-w-0">
+        <TabsList className="grid h-11 w-full grid-cols-2 sm:inline-flex sm:w-auto">
+          <TabsTrigger value="list" className="h-9">Schedule list</TabsTrigger>
+          <TabsTrigger value="calendar" className="h-9">Calendar view</TabsTrigger>
         </TabsList>
 
         <TabsContent value="list" className="mt-4">
           {pmSchedules.length === 0 ? (
             <EmptyState icon={CalendarClock} title="No PM schedules" message="Preventive maintenance schedules will appear here." />
           ) : (
-            <div className="surface-card overflow-hidden">
+            <>
+              <ul className="space-y-3 md:hidden">
+                {pmSchedules.map((p) => {
+                  const overdue = p.nextDue < today && !p.generatedWorkOrderId;
+                  return (
+                    <li key={p.id} className="rounded-lg border bg-card p-4 shadow-sm">
+                      <p className="font-semibold leading-snug">{p.title}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        <Link to="/assets/$id" params={{ id: p.assetId }} className="text-primary hover:underline">{p.assetId}</Link>
+                      </p>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {p.frequencyType === "time" ? `Every ${p.intervalDays} days` : `Every ${p.intervalHours} hrs`}
+                      </p>
+                      <p className={cn("mt-2 text-sm font-medium", overdue && "text-destructive")}>
+                        {formatDate(p.nextDue)} · {relativeDue(p.nextDue, today)}
+                      </p>
+                      {!p.generatedWorkOrderId && p.nextDue <= today ? (
+                        <Button size="sm" variant="outline" className="mt-3 h-9 w-full" onClick={() => handleGenerate(p.id)}>
+                          <Wrench className="size-3.5" aria-hidden /> Generate WO
+                        </Button>
+                      ) : p.generatedWorkOrderId ? (
+                        <Button size="sm" variant="outline" className="mt-3 h-9 w-full" asChild>
+                          <Link to="/work-orders/$id" params={{ id: p.generatedWorkOrderId }}>View {p.generatedWorkOrderId}</Link>
+                        </Button>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="hidden md:block">
+                <TableWrap minWidth={880}>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -113,7 +143,9 @@ function PreventiveMaintenancePage() {
                   })}
                 </TableBody>
               </Table>
-            </div>
+                </TableWrap>
+              </div>
+            </>
           )}
         </TabsContent>
 

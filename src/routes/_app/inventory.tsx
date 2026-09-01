@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Boxes, Minus, Plus } from "lucide-react";
-import { EmptyState, PageHeader, SectionCard, TableSkeleton, useMockLoading } from "@/components/ui-bits";
+import { EmptyState, PageHeader, SectionCard, TableSkeleton, TableWrap, useMockLoading } from "@/components/ui-bits";
 import { LowStockBadge } from "@/components/status";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,7 +44,7 @@ function StockDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md">
         <DialogHeader>
           <DialogTitle>{type === "receive" ? "Receive stock" : "Issue part"}</DialogTitle>
         </DialogHeader>
@@ -103,20 +103,43 @@ function InventoryPage() {
         title="Inventory"
         description={`${parts.length} spare parts · ${lowStock} below reorder level`}
         actions={
-          <div className="flex gap-2">
-            <StockDialog type="receive" trigger={<Button variant="outline"><Plus className="size-4" aria-hidden /> Receive stock</Button>} />
-            <StockDialog type="issue" trigger={<Button><Minus className="size-4" aria-hidden /> Issue part</Button>} />
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <StockDialog type="receive" trigger={<Button variant="outline" className="h-10 w-full sm:w-auto"><Plus className="size-4" aria-hidden /> Receive stock</Button>} />
+            <StockDialog type="issue" trigger={<Button className="h-10 w-full sm:w-auto"><Minus className="size-4" aria-hidden /> Issue part</Button>} />
           </div>
         }
       />
 
-      <Input placeholder="Search parts…" value={search} onChange={(e) => setSearch(e.target.value)} className="mb-4 max-w-sm" />
+      <Input placeholder="Search parts…" value={search} onChange={(e) => setSearch(e.target.value)} className="mb-4 h-10 w-full" />
 
       {filtered.length === 0 ? (
         <EmptyState icon={Boxes} title="No parts found" message="Try a different search term." />
       ) : (
-        <div className="surface-card overflow-hidden">
-          <Table>
+        <>
+          <ul className="space-y-3 lg:hidden">
+            {filtered.map((p) => (
+              <li key={p.id} className="rounded-lg border bg-card p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-semibold">{p.partNumber}</p>
+                  {p.quantity < p.reorderLevel ? <LowStockBadge /> : null}
+                </div>
+                <p className="mt-1 text-sm leading-snug">{p.name}</p>
+                <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                  <div><dt className="text-muted-foreground">On hand</dt><dd className="font-semibold">{p.quantity} {p.uom}</dd></div>
+                  <div><dt className="text-muted-foreground">Reorder</dt><dd className="font-semibold">{p.reorderLevel}</dd></div>
+                  <div><dt className="text-muted-foreground">Bin</dt><dd className="font-semibold">{p.bin}</dd></div>
+                  <div><dt className="text-muted-foreground">Cost</dt><dd className="font-semibold">{currency(p.unitCost)}</dd></div>
+                </dl>
+                <div className="mt-3 flex gap-2">
+                  <StockDialog partId={p.id} type="issue" trigger={<Button size="sm" variant="outline" className="h-9 flex-1">Issue</Button>} />
+                  <StockDialog partId={p.id} type="receive" trigger={<Button size="sm" variant="outline" className="h-9 flex-1">Receive</Button>} />
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden lg:block">
+            <TableWrap minWidth={900}>
+              <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Part #</TableHead>
@@ -154,11 +177,13 @@ function InventoryPage() {
               ))}
             </TableBody>
           </Table>
-        </div>
+            </TableWrap>
+          </div>
+        </>
       )}
 
       <SectionCard title="Stock transaction history" className="mt-6">
-        <div className="overflow-hidden">
+        <TableWrap minWidth={560}>
           <Table>
             <TableHeader>
               <TableRow>
@@ -186,7 +211,7 @@ function InventoryPage() {
               })}
             </TableBody>
           </Table>
-        </div>
+        </TableWrap>
       </SectionCard>
     </div>
   );

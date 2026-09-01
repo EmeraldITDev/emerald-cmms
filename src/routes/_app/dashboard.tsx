@@ -71,7 +71,7 @@ function DashboardPage() {
     <div>
       <PageHeader title="Dashboard" description={SITE} />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         <KpiCard label="Total assets" value={equipment.length} icon={Factory} />
         <KpiCard label="Open work orders" value={openWo.length} icon={ClipboardList} tone="info" />
         <KpiCard label="Overdue work orders" value={overdueWo.length} icon={AlertTriangle} tone="critical" />
@@ -84,7 +84,7 @@ function DashboardPage() {
         <SectionCard title="Work orders by status" className="xl:col-span-1">
           <ChartContainer
             config={{ count: { label: "Count", color: "hsl(var(--primary))" } }}
-            className="mx-auto aspect-square max-h-[260px]"
+            className="mx-auto h-[220px] w-full max-h-[260px] sm:aspect-square"
           >
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />

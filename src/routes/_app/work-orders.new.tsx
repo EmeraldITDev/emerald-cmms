@@ -67,7 +67,7 @@ function NewWorkOrderPage() {
 
       <PageHeader title="Create work order" description="Raise a new maintenance job" />
 
-      <form onSubmit={submit} className="surface-card max-w-3xl space-y-6 p-6">
+      <form onSubmit={submit} className="surface-card w-full max-w-3xl space-y-6 p-4 sm:p-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="title">Title</Label>

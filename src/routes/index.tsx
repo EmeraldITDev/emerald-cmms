@@ -30,20 +30,20 @@ function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col lg:flex-row">
-      <div className="blueprint-grid relative flex flex-1 flex-col justify-between bg-sidebar p-8 text-sidebar-foreground lg:p-12">
+    <div className="flex min-h-screen min-w-0 flex-col lg:flex-row">
+      <div className="blueprint-grid flex flex-col justify-between bg-sidebar px-4 py-8 text-sidebar-foreground sm:px-6 sm:py-10 lg:flex-1 lg:p-12">
         <div className="flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
             <Gauge className="size-6" aria-hidden />
           </span>
-          <div>
-            <p className="text-lg font-bold text-sidebar-accent-foreground">Emerald CMMS</p>
-            <p className="text-sm text-sidebar-foreground/70">Emerald Industrial Co.</p>
+          <div className="min-w-0">
+            <p className="truncate text-lg font-bold text-sidebar-accent-foreground">Emerald CMMS</p>
+            <p className="truncate text-sm text-sidebar-foreground/70">Emerald Industrial Co.</p>
           </div>
         </div>
 
-        <div className="my-12 max-w-lg">
-          <h1 className="text-3xl font-extrabold tracking-tight text-sidebar-accent-foreground sm:text-4xl">
+        <div className="my-8 max-w-lg sm:my-10 lg:my-12">
+          <h1 className="text-2xl font-extrabold tracking-tight text-sidebar-accent-foreground sm:text-3xl lg:text-4xl">
             Control room for plant maintenance
           </h1>
           <p className="mt-4 text-sm leading-relaxed text-sidebar-foreground/80 sm:text-base">
@@ -52,16 +52,18 @@ function LoginPage() {
           </p>
         </div>
 
-        <p className="text-xs text-sidebar-foreground/50">Demo build · mock data only · no live plant connection</p>
+        <p className="text-xs leading-relaxed text-sidebar-foreground/50">Demo build · mock data only · no live plant connection</p>
       </div>
 
-      <div className="flex flex-1 items-center justify-center bg-background px-6 py-12">
+      <div className="flex flex-1 items-center justify-center bg-background px-4 py-8 sm:px-6 sm:py-12">
         <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">Sign in</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Use any credentials — this is a frontend demo.</p>
+          <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Sign in</h2>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+            Use any credentials — this is a frontend demo.
+          </p>
 
           <form
-            className="mt-8 space-y-5"
+            className="mt-6 space-y-5 sm:mt-8"
             onSubmit={(e) => {
               e.preventDefault();
               signIn();
@@ -76,7 +78,7 @@ function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-9"
+                  className="h-11 pl-9 text-base sm:text-sm"
                   autoComplete="username"
                 />
               </div>
@@ -91,7 +93,7 @@ function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-9"
+                  className="h-11 pl-9 text-base sm:text-sm"
                   autoComplete="current-password"
                 />
               </div>
@@ -104,7 +106,7 @@ function LoginPage() {
                 value={role}
                 onChange={(e) => setRole(e.target.value as Role)}
                 className={cn(
-                  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm",
+                  "flex h-11 w-full rounded-md border border-input bg-transparent px-3 text-base shadow-sm sm:text-sm",
                   "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
                 )}
               >
@@ -116,7 +118,7 @@ function LoginPage() {
               </select>
             </div>
 
-            <Button type="submit" className="w-full" size="lg">
+            <Button type="submit" className="h-11 w-full text-base sm:text-sm" size="lg">
               Sign in to Emerald CMMS
             </Button>
           </form>

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { FileText, Wrench } from "lucide-react";
 import { AssetStatusBadge, CriticalityBadge, HealthBar, PriorityBadge, WorkOrderStatusBadge } from "@/components/status";
-import { PageHeader, SectionCard } from "@/components/ui-bits";
+import { PageHeader, SectionCard, TableWrap } from "@/components/ui-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ function AssetDetailPage() {
 
   return (
     <div>
-      <Breadcrumb className="mb-4">
+      <Breadcrumb className="mb-4 overflow-x-auto">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild><Link to="/assets">Assets</Link></BreadcrumbLink>
@@ -67,7 +67,7 @@ function AssetDetailPage() {
         title={`${asset.id} · ${asset.name}`}
         description={`${asset.category} · ${asset.location}`}
         actions={
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link to="/work-orders/new" search={{ assetId: id }}>
               <Wrench className="size-4" aria-hidden /> New work order
             </Link>
@@ -81,13 +81,13 @@ function AssetDetailPage() {
         <HealthBar value={asset.healthScore} />
       </div>
 
-      <Tabs defaultValue="overview">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="work-orders">Work order history ({assetWorkOrders.length})</TabsTrigger>
-          <TabsTrigger value="pm">PM schedule ({assetPm.length})</TabsTrigger>
-          <TabsTrigger value="parts">Parts used ({linkedParts.length})</TabsTrigger>
-          <TabsTrigger value="documents">Documents ({asset.documents.length})</TabsTrigger>
+      <Tabs defaultValue="overview" className="min-w-0">
+        <TabsList className="table-scroll h-auto w-full max-w-full justify-start gap-1 p-1">
+          <TabsTrigger value="overview" className="shrink-0">Overview</TabsTrigger>
+          <TabsTrigger value="work-orders" className="shrink-0">Work orders ({assetWorkOrders.length})</TabsTrigger>
+          <TabsTrigger value="pm" className="shrink-0">PM ({assetPm.length})</TabsTrigger>
+          <TabsTrigger value="parts" className="shrink-0">Parts ({linkedParts.length})</TabsTrigger>
+          <TabsTrigger value="documents" className="shrink-0">Docs ({asset.documents.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-4">
@@ -117,7 +117,7 @@ function AssetDetailPage() {
           {assetWorkOrders.length === 0 ? (
             <p className="text-sm text-muted-foreground">No work orders recorded for this asset.</p>
           ) : (
-            <div className="surface-card overflow-hidden">
+            <TableWrap minWidth={560}>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -140,7 +140,7 @@ function AssetDetailPage() {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrap>
           )}
         </TabsContent>
 
@@ -148,7 +148,7 @@ function AssetDetailPage() {
           {assetPm.length === 0 ? (
             <p className="text-sm text-muted-foreground">No PM schedules linked.</p>
           ) : (
-            <div className="surface-card overflow-hidden">
+            <TableWrap minWidth={560}>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -169,7 +169,7 @@ function AssetDetailPage() {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrap>
           )}
         </TabsContent>
 
@@ -177,7 +177,7 @@ function AssetDetailPage() {
           {linkedParts.length === 0 ? (
             <p className="text-sm text-muted-foreground">No spare parts linked to this asset.</p>
           ) : (
-            <div className="surface-card overflow-hidden">
+            <TableWrap minWidth={560}>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -198,14 +198,14 @@ function AssetDetailPage() {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrap>
           )}
         </TabsContent>
 
         <TabsContent value="documents" className="mt-4">
           <ul className="space-y-2">
             {asset.documents.map((doc) => (
-              <li key={doc.name} className="flex items-center justify-between rounded-md border px-4 py-3">
+              <li key={doc.name} className="flex flex-col gap-3 rounded-md border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <FileText className="size-4 text-muted-foreground" aria-hidden />
                   <div>
