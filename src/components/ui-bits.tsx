@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -118,11 +118,6 @@ export function TableSkeleton({ rows = 6 }: { rows?: number }) {
 }
 
 export function useMockLoading(ms = 450) {
-  return useDelayedReady(ms);
-}
-
-import { useEffect, useState } from "react";
-function useDelayedReady(ms: number) {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setReady(true), ms);
